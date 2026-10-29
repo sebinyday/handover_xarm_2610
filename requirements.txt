@@ -1,0 +1,22 @@
+--extra-index-url https://download.pytorch.org/whl/cu121
+# Python 3.10. SAM2's official minimum Torch versions; install the CUDA wheel
+# build matching the host driver before installing the rest of this file.
+numpy==1.26.4
+scipy==1.13.1
+PyYAML==6.0.3
+opencv-contrib-python==4.10.0.84
+mediapipe==0.10.11
+open3d==0.19.0
+pyrealsense2==2.55.1.6486
+torch==2.5.1+cu121
+torchvision==0.20.1+cu121
+hydra-core==1.3.2
+iopath==0.1.10
+tqdm==4.67.1
+Pillow==11.1.0
+Flask==3.0.3
+Werkzeug==3.0.6
+xarm-python-sdk==1.17.3
+rerun-sdk==0.19.1
+# Shared SAM3D stage1 dependencies: environment/sam3d-runtime-requirements.txt.
+# SAM2 source and AnySkin: see external/README.md.

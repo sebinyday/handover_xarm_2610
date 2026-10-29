@@ -1,0 +1,263 @@
+{
+  "config": "/home/sebin/handover_xarm_2610/configs/handover.yaml",
+  "checks": {
+    "calibration": [
+      "238222073927",
+      "335522072904"
+    ],
+    "teaching": true,
+    "numpy": true,
+    "scipy": true,
+    "cv2": true,
+    "mediapipe": true,
+    "open3d": true,
+    "torch": true,
+    "torchvision": true,
+    "pyrealsense2": true,
+    "flask": true,
+    "hydra": true,
+    "iopath": true,
+    "pytorch3d": true,
+    "kaolin": true,
+    "spconv": true,
+    "moge": true,
+    "utils3d": true,
+    "gsplat": true,
+    "safetensors": true,
+    "timm": true,
+    "xarm": true,
+    "anyskin": true,
+    "sam2_source": "/home/sebin/hop/sam2/sam2/sam2_video_predictor.py",
+    "sam2_checkpoint": "/home/sebin/hop/sam2/checkpoints/sam2.1_hiera_small.pt",
+    "sam3d_same_environment": true,
+    "sam3d_source": true,
+    "sam3d_assets": "05fef9a8d62e50e519161bedfa7ef8d3c44982d99ed23ad09cac46c877522232",
+    "cuda": true,
+    "torch_version": "2.5.1+cu121"
+  },
+  "errors": [],
+  "ready": true,
+  "validation": {
+    "unit_and_integration_tests_passed": 163,
+    "sam2_gpu_smoke": "passed, shared weights and independent two-camera states, 3 frames per camera",
+    "sam3d_dependencies_gpu_smoke": {
+      "python": "/home/sebin/miniforge3/envs/handover/bin/python",
+      "torch": "2.5.1+cu121",
+      "gpu": "NVIDIA RTX A6000",
+      "pytorch3d_cuda": true,
+      "kaolin_cuda": true,
+      "spconv_cuda": true,
+      "sam3d_pipeline_import": "Stage1PointMapPipeline",
+      "check_scope": "dependencies_only",
+      "weights_loaded": false,
+      "passed": true
+    },
+    "model_access_approved": false,
+    "model_inference_tested": true,
+    "hardware_connected": true,
+    "pip_check_remaining": "pre-existing pyzed 5.3 requires numpy>=2; project uses numpy 1.26.4",
+    "weights_available": true,
+    "real_stage1_model": {
+      "source": "user Google Drive checkpoint hf.zip",
+      "stage1_only": true,
+      "point_count": 25819,
+      "shape": [
+        25819,
+        3
+      ],
+      "all_finite": true,
+      "extent_m": [
+        0.09166666865348816,
+        0.08166666328907013,
+        0.10500000417232513
+      ],
+      "server_instance_id": "9814448ca96e4c8691059fc58a350015",
+      "model_load_elapsed_s": 62.083376127062365,
+      "generation": {
+        "export_elapsed_s": 0.016690836986526847,
+        "inference_elapsed_s": 8.148584236972965,
+        "message": "template generated",
+        "model_load_elapsed_s": 62.083376127062365,
+        "model_signature": "05fef9a8d62e50e519161bedfa7ef8d3c44982d99ed23ad09cac46c877522232",
+        "operation": "generate",
+        "protocol_version": 1,
+        "request_elapsed_s": 8.174992919899523,
+        "request_id": "0b16e59a449f4017abd8a0670545ac79",
+        "server_instance_id": "9814448ca96e4c8691059fc58a350015",
+        "state": "ready",
+        "success": true,
+        "template_path": "/home/sebin/handover_xarm_2610/output/sam3d_checkpoint_validation/template.npy",
+        "template_point_count": 25819
+      },
+      "artifact_directory": "/home/sebin/handover_xarm_2610/output/sam3d_checkpoint_validation",
+      "passed": true
+    },
+    "weights_source": "user-provided Google Drive hf.zip; only stage1 files imported",
+    "sam3d_weights_gpu_smoke": {
+      "python": "/home/sebin/miniforge3/envs/handover/bin/python",
+      "torch": "2.5.1+cu121",
+      "gpu": "NVIDIA RTX A6000",
+      "pytorch3d_cuda": true,
+      "kaolin_cuda": true,
+      "spconv_cuda": true,
+      "sam3d_pipeline_import": "Stage1PointMapPipeline",
+      "check_scope": "dependencies_and_weights",
+      "weights_loaded": true,
+      "loaded_models": [
+        "ss_decoder",
+        "ss_generator"
+      ],
+      "model_load_elapsed_s": 11.727357393014245,
+      "passed": true
+    },
+    "robot_motion_tested": false,
+    "robot_read_only_check": {
+      "robot_ip": "192.168.1.218",
+      "motion_commands_sent": false,
+      "initial_cached_tcp_offset_mm_rad": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reported_tcp_offset_mm_rad": [
+        0,
+        0,
+        174,
+        0,
+        0,
+        0
+      ],
+      "reported_world_offset_mm_rad": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "offsets_match_configuration": true,
+      "error_warning": [
+        0,
+        0
+      ],
+      "state": 5,
+      "status_report_race_reproduced": true,
+      "status_report_wait_fix_verified": true
+    },
+    "robotiq_startup_recovery": {
+      "reported_startup_error": "Robotiq fault 5 before HOME",
+      "status_query_only": true,
+      "observed_status": {
+        "gOBJ": 0,
+        "gSTA": 3,
+        "gGTO": 0,
+        "gACT": 1,
+        "kFLT": 0,
+        "gFLT": 9,
+        "gPR": 0,
+        "gPO": 3,
+        "gCU": 0
+      },
+      "mock_recovery_home_follow_cycle_passed": true,
+      "activation_hardware_tested": false,
+      "robot_motion_tested": false
+    },
+    "handover_cycle_regressions": {
+      "home_capture_gate_mock_tested": true,
+      "fresh_rgb_depth_after_home_mock_tested": true,
+      "pregrasp_tolerance_mm": [
+        10,
+        10,
+        10
+      ],
+      "workspace_floor_mm": 80,
+      "release_open_home_sequence_mock_tested": true,
+      "workspace_boundary_float64_fix_tested": true,
+      "invalid_release_feedback_keeps_gripper_closed_tested": true,
+      "hardware_motion_tested": false
+    },
+    "robotiq_communication": {
+      "report": "output/robotiq_communication_validation.json",
+      "new_tests_passed": 16,
+      "physical_c19_retested": false
+    },
+    "same_object_refit": {
+      "report": "output/same_object_refit_validation.json",
+      "new_tests_passed": 12,
+      "hardware_motion_tested": false
+    },
+    "gripper_release": {
+      "report": "output/gripper_release_validation.json",
+      "new_tests_passed": 8,
+      "hardware_motion_tested": false,
+      "physical_c19_retested": false
+    },
+    "robotiq_contact_stop": {
+      "report": "output/robotiq_contact_stop_validation.json",
+      "new_tests_passed": 3,
+      "hardware_motion_tested": false,
+      "physical_c19_retested": false
+    },
+    "robotiq_activation_loss": {
+      "report": "output/robotiq_activation_loss_validation.json",
+      "new_tests_passed": 5,
+      "hardware_motion_tested": false
+    },
+    "fixed_box_place": {
+      "report": "output/fixed_box_place_validation.json",
+      "new_tests_passed": 10,
+      "hardware_motion_tested": false
+    }
+  },
+  "package_versions": {
+    "torch": "2.5.1+cu121",
+    "torchvision": "0.20.1+cu121",
+    "numpy": "1.26.4",
+    "mediapipe": "0.10.11",
+    "open3d": "0.19.0",
+    "hydra-core": "1.3.2",
+    "setuptools": "80.9.0",
+    "pytorch3d": "0.7.8",
+    "kaolin": "0.17.0",
+    "spconv-cu121": "2.3.8",
+    "cumm-cu121": "0.7.11",
+    "moge": "1.0.0",
+    "utils3d": "0.0.2",
+    "gsplat": "1.5.3",
+    "lightning": "2.3.3",
+    "pytorch-lightning": "2.3.3",
+    "anyskin": "1.0.0"
+  },
+  "sam3d_source_revision": "f91db411c50efee93d8db7aeb323885650f6f722",
+  "checkpoint_provenance": {
+    "source_url": "https://drive.google.com/file/d/1nDH7ghej5GwhsmqVsPww37ZuE2wyDWKv/view",
+    "source_archive": "hf.zip",
+    "source_archive_bytes": 12022032297,
+    "stage1_only": true,
+    "files": {
+      "pipeline.yaml": {
+        "bytes": 3548,
+        "sha256": "53c3d226b21df85c0bb3d16e6e4fa63abde0d6167525765eb929d02bfa9d358c"
+      },
+      "ss_generator.yaml": {
+        "bytes": 5076,
+        "sha256": "3c265448bca7c057f94e3ef56adea3a895a10bcd9f15f992a41dd03fa35412cd"
+      },
+      "ss_generator.ckpt": {
+        "bytes": 6690136964,
+        "sha256": "225f40479e4cff4f39d6fa14c55be3abad1475bf55b61af3bec1e19ed2f6c146"
+      },
+      "ss_decoder.yaml": {
+        "bytes": 244,
+        "sha256": "baacff269b664f84f7aa1896ebd66128065f6568cdb88d419d5c3d2ccb4193ae"
+      },
+      "ss_decoder.ckpt": {
+        "bytes": 147609242,
+        "sha256": "6dac1cd7b7fda5a38e0614fadae441f1794f80e39ea2981f1ac8aff0a7e99340"
+      }
+    }
+  }
+}

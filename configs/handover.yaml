@@ -1,0 +1,394 @@
+system:
+  sensor_fps: 30
+video_recording:
+  web_ui:
+    enabled: false
+  tactile_logging:
+    enabled: true
+    csv_enabled: true
+    rerun_enabled: true
+    rerun_live: false
+frames:
+  height_axis:
+    name: z
+    positive_direction: up
+cameras:
+  cam0:
+    serial: '238222073927'
+    width: 640
+    height: 480
+    fps: 30
+    depth_filters:
+      spatial:
+        enabled: true
+        magnitude: 2
+        smooth_alpha: 0.5
+        smooth_delta: 20
+      temporal:
+        enabled: true
+        smooth_alpha: 0.4
+        smooth_delta: 20
+      hole_filling:
+        enabled: false
+        mode: 1
+      bilateral:
+        enabled: true
+        radius: 2
+        sigma_color: 0.02
+        sigma_space: 2.0
+        zfar: 100.0
+  cam1:
+    serial: '335522072904'
+    width: 640
+    height: 480
+    fps: 30
+    depth_filters:
+      spatial:
+        enabled: true
+        magnitude: 2
+        smooth_alpha: 0.5
+        smooth_delta: 20
+      temporal:
+        enabled: true
+        smooth_alpha: 0.2
+        smooth_delta: 20
+      hole_filling:
+        enabled: false
+        mode: 1
+      bilateral:
+        enabled: true
+        radius: 2
+        sigma_color: 0.02
+        sigma_space: 2.0
+        zfar: 100.0
+perception:
+  synchronization:
+    max_pair_time_delta_sec: 0.03
+    stale_timeout_sec: 0.3
+  object:
+    backend: sam3d
+    label: object
+    point_cloud:
+      stride: 2
+      max_points: 20000
+      min_depth_m: 0.1
+      max_depth_m: 1.7
+      per_camera_voxel_size_m: 0.005
+      outlier_method: statistical
+      outlier_nb_neighbors: 20
+      outlier_std_ratio: 2.0
+      outlier_radius_m: 0.01
+      outlier_min_neighbors: 8
+      min_points_per_camera: 300
+    sam2:
+      repo_path: /home/sebin/hop/sam2
+      checkpoint: /home/sebin/hop/sam2/checkpoints/sam2.1_hiera_small.pt
+      model_config: configs/sam2.1/sam2.1_hiera_s.yaml
+      device: cuda
+      max_history_frames: 64
+      min_mask_pixels: 300
+  hand:
+    detector:
+      min_detection_confidence: 0.5
+      min_tracking_confidence: 0.5
+      max_num_hands: 2
+    depth_lifting:
+      patch_radius: 2
+      min_depth_m: 0.1
+      max_depth_m: 2.0
+      min_valid_keypoints: 4
+    smoothing_window_frames: 2
+    velocity_alpha: 0.5
+    min_pose_quality: 0.25
+    handedness_selection:
+      right_hand_camera: 1
+      left_hand_camera: 0
+      hysteresis_frames: 5
+      dropout_hold_frames: 4
+      confidence_drop_margin: 0.15
+      lock_after_stable_frames: 4
+      lock_hold_last_on_dropout: true
+  hand_selection:
+    candidate_identity_mode: handedness
+    allowed_active_candidate_ids:
+    - cam0:left
+    - cam1:right
+    active_hand_distance_threshold_m: 0.15
+    switch_margin_m: 0.95
+    switch_confirm_frames: 15
+    lost_timeout_s: 1000000000.5
+    lock_active_hand_during_task: true
+    log_active_hand_switches: true
+    log_active_hand_selection: true
+    log_active_hand_selection_every_frame: false
+  fusion:
+    object_centroid_alpha: 1
+    hand_center_alpha: 1
+    hand_normal_alpha: 0.5
+    max_position_jump_m: 0.2
+    stable_frames_required: 5
+  shape_fitting:
+    enabled: true
+    sam3d:
+      repo_path: external/sam-3d-objects
+      checkpoint_config: checkpoints/hf/pipeline.yaml
+      require_cuda: true
+      compile: false
+      seed: 42
+      canonical_extent_m: 0.1
+      robust_percentile: 1.0
+      min_template_points: 100
+      min_axis_extent_m: 0.0001
+      template_id: sam3d_runtime
+      scale_mode: axis_xyz
+      initial_silhouette_scaling_frames: 6
+      artifact_root: output/sam3d
+      z_rotation:
+        enabled: true
+        min_deg: -180.0
+        max_deg: 180.0
+        step_deg: 15.0
+        coarse_to_fine:
+          enabled: true
+          coarse_step_deg: 30.0
+          refine_radius_deg: 15.0
+          refine_step_deg: 5.0
+      axis_rotation_candidates:
+        enabled: false
+        roll_deg:
+        - 90.0
+        - -90.0
+        pitch_deg:
+        - 90.0
+        - -90.0
+    template_library: {}
+    cluster:
+      dbscan_eps_m: 0.02
+      dbscan_min_points: 10
+      max_cluster_jump_m: 0.08
+    scale_init:
+      mode: uniform
+      stable_frames: 8
+      percentile_low: 5.0
+      percentile_high: 95.0
+      min_scale: 0.5
+      max_scale: 1.8
+    tracking:
+      min_cluster_extent_m: 1.0e-05
+    icp:
+      max_points: 3500
+      max_iterations: 10
+      distance_threshold_m: 0.15
+      min_fitness: 0.02
+      translation_tolerance_m: 1.0e-05
+      max_centroid_jump_m: 3
+      crop:
+        enabled: true
+        height_axis_index: 2
+        target_top_fraction: 0.05
+        min_points_after_crop: 80
+        min_height_extent_m: 0.01
+    downsample:
+      voxel_size_m: 0.004
+      max_points: 6000
+    silhouette_constraint:
+      enabled: true
+      apply_to_labels:
+      - object
+      apply_to_all: true
+      lambda_3d: 0
+      lambda_iou: 10.75
+      lambda_outside: 10.8
+      lambda_scale_prior: 0
+      lambda_temporal: 0
+      point_radius_px: 2
+      close_kernel_px: 5
+      dilate_px: 1
+      mask_erode_px: 0
+      min_rendered_pixels: 30
+      min_segmentation_pixels: 50
+      distance_trunc_px: 25.0
+      robust_3d_trunc_m: 0.03
+      observed_to_template_weight: 0.9
+      robust_3d_max_points: 2000
+      max_projection_points: 1500
+      growth_penalty: 1.0
+      max_growth_factor: 1.05
+      shrink_factors:
+      - 0.9
+      - 0.95
+      - 0.99
+      uniform_growth_factors:
+      - 1.0
+      - 1.05
+      debug: true
+  activation:
+    hand_approach_distance_threshold_m: 0.15
+    stable_frames_required: 2
+grasp:
+  # xArm reports the configured gripper TCP, so close only near that target.
+  pregrasp_tolerance_mm: [10.0, 10.0, 10.0]
+  fixed_orientation_format: rpy
+  fixed_orientation_base:
+  - 0
+  - 0
+  - 0
+  candidate_search_radius_from_centroid_m: 0.11
+  min_hand_height_clearance_m: 0.07
+  no_candidate_action: hold
+  hand_relative_fallback:
+    enabled: true
+    lock_frames: 1
+    anchor_outlier_threshold_m: 0.08
+    max_dropout_sec: 3.0
+    require_hand_approach: false
+    require_motion_triggered: true
+    debug_log: false
+    log_lock_progress: false
+    log_fallback_every_frames: 1
+  target_selection:
+    enabled: true
+    switch_margin: 0.01
+    hold_frames: 6
+    dropout_hold_frames: 8
+    score_previous_distance_weight: 0.9
+  z_stabilization:
+    enabled: true
+    activation_dist_xy_m: 0.15
+    max_step_z_m: 0.002
+    ema_alpha: 0.7
+robot:
+  return_sequence:
+    # teach.yaml place_object_xyz_mm selects fixed TCP box release.
+    # XY and descent settings below apply to legacy XY-only teaching.
+    place_object_xy_mm:
+    - 0
+    - 0
+    apply_grasp_offset_xy: false
+    pre_release_descend_enabled: true
+    pre_release_descend_m: 0.02
+    post_release_z_offset_m: -0.03
+    post_backoff_stop_check_enabled: true
+    post_backoff_stop_speed_threshold_mps: 0.002
+    post_backoff_stop_timeout_s: 1.0
+    post_backoff_stop_poll_dt_s: 0.01
+    post_backoff_stop_require_confirmed: false
+  tactile:
+    enabled: true
+    port: /dev/ttyACM0
+    num_mags: 5
+    baseline_samples: 5
+    startup_delay_s: 1.0
+    contact_norm_threshold: 35.0
+    extra_grasp_pos: 20
+    release_delta_threshold: 30
+    release_ref_delay_s: 0.3
+    release_descent_min_z_mm: 40.0
+    release_descent_step_mm: 2.0
+    release_descent_poll_dt_s: 0.03
+    auto_baseline_reset_after_open_s: 0
+    release_stop_timing_debug: false
+    release_stop_speed_threshold_mps: 0.002
+    release_stop_monitor_timeout_s: 1.0
+    release_stop_monitor_poll_dt_s: 0.005
+    debug: false
+  live_follow:
+    control_hz: 30.0
+    follow_z: true
+  motion:
+    approach_speed_mps: 0.35
+    retreat_speed_mps: 0.18
+  gripper:
+    communication:
+      baudrate: 115200
+      modbus_timeout_ms: 500
+      min_interval_sec: 0.1
+      command_settle_sec: 0.2
+      reset_settle_sec: 0.5
+      activate_settle_sec: 2.0
+      baud_settle_sec: 1.0
+    close_timeout_sec: 5.0
+    activate_on_connect: true
+    activation_timeout_sec: 10.0
+    open_timeout_sec: 5.0
+    # Extra delay did not prevent open_prepare C19; retain normal I/O spacing.
+    open_prepare_delay_sec: 0.0
+    open_speed: 250
+    open_force: 255
+    close_speed: 255
+    close_force: 255
+    position_complete_threshold: 200
+    position_stall_detection:
+      enabled: true
+      stable_reads_required: 3
+      tolerance: 1
+      min_elapsed_s: 0.12
+    position_threshold_geometry:
+      enabled: true
+      alpha_cm: -0.2
+      formula_opening_cm: 9.0
+      slice_band_m: 0.005
+      min_slice_points: 8
+      fallback_nearest_points: 64
+      local_width_axis_by_label: {}
+      anisotropic_ratio: 1.25
+      clamp_min: 0
+      clamp_max: 255
+    debug: false
+  grasp_verification:
+    use_tcp_force: false
+    use_joint_current: false
+    min_tcp_force_norm_n: 8.0
+    min_mean_joint_current_a: 0.15
+    require_both_signals: false
+  xarm:
+    robot_ip: 192.168.1.218
+    report_timeout_sec: 5.0
+    watchdog_timeout_sec: 0.5
+    move_acceleration: 0.75
+    expected_tcp_offset_mm_rad:
+    - 0
+    - 0
+    - 174
+    - 0
+    - 0
+    - 0
+    expected_world_offset_mm_rad:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  teach_file: configs/teach.yaml
+runtime:
+  prompt_capture_settle_sec: 0.2
+  sam3d_server:
+    python_interpreter: /home/sebin/miniforge3/envs/handover/bin/python
+    repo_path: external/sam-3d-objects
+    execution_mode: server
+    server_socket: /tmp/handover_xarm_sam3d.sock
+    server_ready_timeout_s: 120
+    request_timeout_s: 120
+    artifact_root: output/sam3d
+  stable_capture:
+    stable_frames: 3
+    min_temporal_iou: 0.8
+    min_mask_pixels: 300
+  ready_valid_frames: 4
+safety:
+  workspace_bounds_m:
+    x:
+    - -0.2
+    - 1.1
+    y:
+    - -0.8
+    - 0.8
+    z:
+    - 0.0
+    - 0.8
+calibration:
+  cameras:
+    cam0: /home/sebin/xarm7_charuco_calibration/results/cam1.json
+    cam1: /home/sebin/xarm7_charuco_calibration/results/cam2.json
+  intrinsics_tolerance_px: 0.5
